@@ -24,7 +24,7 @@ db.sequelize.sync();
 const Role = db.role;
 
 db.sequelize.sync({force: true}).then(() => {
-  console.log('Drop and Resync Db');
+  console.log('Drop and Resync Database with { force: true }');
   initial();
 });
 
@@ -33,6 +33,11 @@ db.sequelize.sync({force: true}).then(() => {
 app.get("/", (req, res) => {
   res.json({ message: "Bem Vindo ao Eindhoven Classification Method." });
 });
+
+// routes
+require('./app/routes/auth.routes')(app);
+require('./app/routes/user.routes')(app);
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

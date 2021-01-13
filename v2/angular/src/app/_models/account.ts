@@ -4,7 +4,7 @@ export class Account {
     id: string;
     title: string;
     firstName: string;
-    lastName: string;
+    companyName: string;
     email: string;
     role: Role;
     jwtToken?: string;

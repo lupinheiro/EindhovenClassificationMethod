@@ -23,10 +23,10 @@
             </div>
         </div>
         <div class="form-group col-5">
-            <label>Last Name</label>
-            <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
-            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-                <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+            <label>Company Name</label>
+            <input type="text" formControlName="companyName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.companyName.errors }" />
+            <div *ngIf="submitted && f.companyName.errors" class="invalid-feedback">
+                <div *ngIf="f.companyName.errors.required">Company Name is required</div>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
                 <option value=""></option>
                 <option value="User">User</option>
                 <option value="Admin">Admin</option>
-                <option value="Admin">Mod</option>
+                <option value="Mod">Mod</option>
             </select>
             <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
                 <div *ngIf="f.role.errors.required">Role is required</div>

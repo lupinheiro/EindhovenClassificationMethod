@@ -18,11 +18,23 @@ async function initialize() {
     // init models and add them to the exported db object
     db.Account = require('../accounts/account.model')(sequelize);
     db.RefreshToken = require('../accounts/refresh-token.model')(sequelize);
+    db.Context = require('../accounts/context.model')(sequelize);
+    db.Category = require('../accounts/category.model')(sequelize);
+    db.Process = require('../accounts/process.model')(sequelize);
+
 
     // define relationships
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
+    db.Account.hasMany(db.Process);
     db.RefreshToken.belongsTo(db.Account);
+    db.Process.belongsTo(db.Account);
+    db.Process.hasMany(db.Context, { onDelete: 'CASCADE' });
+    db.Context.belongsTo(db.Process);
+    db.Context.hasMany(db.Category, { onDelete: 'CASCADE' });
+    db.Category.belongsTo(db.Context);
     
+
+       
     // sync all models with database
     await sequelize.sync();
 }

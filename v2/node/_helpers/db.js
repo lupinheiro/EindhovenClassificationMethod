@@ -21,13 +21,16 @@ async function initialize() {
     db.Context = require('../accounts/context.model')(sequelize);
     db.Category = require('../accounts/category.model')(sequelize);
     db.Process = require('../accounts/process.model')(sequelize);
+    db.Line = require('../accounts/processLine.model')(sequelize);
 
 
     // define relationships
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
-    db.Account.hasMany(db.Process);
+    db.Account.hasMany(db.Line, { onDelete: 'CASCADE' });
+    db.Line.belongsTo(db.Account);
+    db.Line.hasMany(db.Process);
     db.RefreshToken.belongsTo(db.Account);
-    db.Process.belongsTo(db.Account);
+    db.Process.belongsTo(db.Line);
     db.Process.hasMany(db.Context, { onDelete: 'CASCADE' });
     db.Context.belongsTo(db.Process);
     db.Context.hasMany(db.Category, { onDelete: 'CASCADE' });

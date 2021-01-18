@@ -9,7 +9,7 @@ function model(sequelize) {
 
     const options = {
         // disable default timestamp fields (createdAt and updatedAt)
-        timestamps: true
+        timestamps: false
     };
 
     return sequelize.define('process', attributes, options);

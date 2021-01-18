@@ -18,23 +18,17 @@ async function initialize() {
     // init models and add them to the exported db object
     db.Account = require('../accounts/account.model')(sequelize);
     db.RefreshToken = require('../accounts/refresh-token.model')(sequelize);
-    db.Context = require('../accounts/context.model')(sequelize);
     db.Category = require('../accounts/category.model')(sequelize);
     db.Process = require('../accounts/process.model')(sequelize);
-    db.Line = require('../accounts/processLine.model')(sequelize);
 
 
     // define relationships
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
-    db.Account.hasMany(db.Line, { onDelete: 'CASCADE' });
-    db.Line.belongsTo(db.Account);
-    db.Line.hasMany(db.Process);
     db.RefreshToken.belongsTo(db.Account);
-    db.Process.belongsTo(db.Line);
-    db.Process.hasMany(db.Context, { onDelete: 'CASCADE' });
-    db.Context.belongsTo(db.Process);
-    db.Context.hasMany(db.Category, { onDelete: 'CASCADE' });
-    db.Category.belongsTo(db.Context);
+    db.Process.belongsToMany(db.Account, {through: "Account_Process", as: "Accounts", foreignKey: "Account_id"});
+    db.Account.belongsToMany(db.Process, {through: "Account_Process", as: "Processes", foreignKey: "Process_id"});
+    db.Process.belongsToMany(db.Category, {through: "Process_Category", as: "Context", foreignKey: "Category_id"});
+
     
 
        

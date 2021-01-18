@@ -25,9 +25,9 @@ async function initialize() {
     // define relationships
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
     db.RefreshToken.belongsTo(db.Account);
-    db.Process.belongsToMany(db.Account, {through: "Account_Process", as: "Accounts", foreignKey: "Account_id"});
-    db.Account.belongsToMany(db.Process, {through: "Account_Process", as: "Processes", foreignKey: "Process_id"});
-    db.Process.belongsToMany(db.Category, {through: "Process_Category", as: "Context", foreignKey: "Category_id"});
+    db.Process.belongsToMany(db.Account, {through: "Account_Process", as: "Accounts", foreignKey: "Process_id"});
+    db.Account.belongsToMany(db.Process, {through: "Account_Process", as: "Processes", foreignKey: "Account_id"});
+    db.Process.belongsToMany(db.Category, {through: "Process_Category", as: "Context", foreignKey: "Process_id"});
 
     
 

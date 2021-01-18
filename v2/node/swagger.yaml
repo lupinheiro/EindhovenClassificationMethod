@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Node.js Sign-up and Verification API
-  description: Node.js + MySQL - API with email sign-up, verification, authentication and forgot password
+  title: Eindhoven Classification Method
+  description: ProjetoIII
   version: 1.0.0
 
 servers:
@@ -463,7 +463,7 @@ paths:
                   example: "pass123"
                 role:
                   type: string
-                  enum: [Admin, User]
+                  enum: [Admin, User,Mod]
               required:
                 - title
                 - firstName
@@ -597,7 +597,7 @@ paths:
                   example: "pass123"
                 role:
                   type: string
-                  enum: [Admin, User]
+                  enum: [Admin, User, Mod]
       responses:
         "200":
           description: Account updated successfully. The details of the updated account are returned.

@@ -7,13 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'bpmn-js-angular';
-<<<<<<< HEAD
-  diagramUrl = 'https://github.com/lupinheiro/EindhovenClassificationMethod/blob/f92c159043523c2236197af67d57dfb0a002a68c/v2/angular/src/app/admin/flowchart/diagram-2.bpmn';
-=======
-  diagramUrl = 'v2/angular/src/app/admin/flowchart/diagram-2.bpmn'; 
->>>>>>> flowchart
+  diagramUrl = 'https://cdn.staticaly.com/gh/lupinheiro/EindhovenClassificationMethod/f92c159043523c2236197af67d57dfb0a002a68c/v2/angular/src/app/admin/flowchart/diagram-2.bpmn';
   importError?: Error;
-
   handleImported(event) {
 
     const {

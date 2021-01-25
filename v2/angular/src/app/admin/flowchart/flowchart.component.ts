@@ -1,38 +1,13 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import {Modeler, OriginalPropertiesProvider, PropertiesPanelModule, InjectionNames, OriginalPaletteProvider} from "./bpmn-js";
-import {CustomPropsProvider} from './CustomPropsProvider';
-import {CustomPaletteProvider} from "./CustomPaletteProvider";
 import { first } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {BpmnModeler} from 'bpmn-js/lib/Modeler';
 
 import { AccountService, AlertService } from '@app/_services';
 
-const customModdle = {
-  name: "customModdle",
-  uri: "https://github.com/lupinheiro/EindhovenClassificationMethod",
-  prefix: "custom",
-  xml: {
-    tagAlias: "lowerCase"
-  },
-  associations: [],
-  types: [
-    {
-      "name": "ExtUserTask",
-      "extends": [
-        "bpmn:UserTask"
-      ],
-      "properties": [
-        {
-          "name": "worklist",
-          "isAttr": true,
-          "type": "String"
-        }
-      ]
-    },
-  ]
-};
 
 @Component({
   selector: 'app-root',
@@ -61,23 +36,6 @@ export class AppComponent implements OnInit {
       container: '#canvas',
       width: '100%',
       height: '600px',
-      additionalModules: [
-        PropertiesPanelModule,
-
-        // Re-use original bpmn-properties-module, see CustomPropsProvider
-        {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
-        {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
-
-        // Re-use original palette, see CustomPaletteProvider
-        {[InjectionNames.originalPaletteProvider]: ['type', OriginalPaletteProvider]},
-        {[InjectionNames.paletteProvider]: ['type', CustomPaletteProvider]},
-      ],
-      propertiesPanel: {
-        parent: '#properties'
-      },
-      moddleExtension: {
-        custom: customModdle
-      }
     });
   }
 
@@ -99,9 +57,25 @@ export class AppComponent implements OnInit {
       },
     );
   }
+  
+
+  setEncoded(link, name, data) {
+    var encodedData = encodeURIComponent(data);
+
+    if (data) {
+      link.addClass('active').attr({
+        'href': 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData,
+        'download': name
+      });
+    } else {
+      link.removeClass('active');
+    }
+  }
 
   save(): void {
-    this.modeler.saveXML((err: any, xml: any) => console.log('Result of saving XML: ', err, xml));
+    this.modeler.saveXML((err: any, xml: any) => 
+    console.log('Result of saving XML: ', err, xml)
+    );
   }
 }
 

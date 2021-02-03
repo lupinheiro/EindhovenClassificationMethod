@@ -5,14 +5,15 @@ import { SubNavComponent } from './subnav.component';
 import { LayoutComponent } from './layout.component';
 import { OverviewComponent } from './overview.component';
 
-const accountsModule = () => import('./accounts/accounts.module').then(x => x.AccountsModule);
+const causesModule = () => import('./causes/causes.module').then(x => x.CausesModule);
 const flowchartModule = () => import('../admin/flowchart/flowchart.module').then(x => x.FlowchartModel);
 const routes: Routes = [
+    { path: '', component: SubNavComponent, outlet: 'subnav' },
     {
         path: '', component: LayoutComponent,
         children: [
             { path: '', component: OverviewComponent },
-            { path: 'accounts', loadChildren: accountsModule },
+            { path: 'causes', loadChildren: causesModule },
             { path: 'flowchart', loadChildren: flowchartModule }
         ]
     }

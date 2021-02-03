@@ -6,8 +6,8 @@ import { first } from 'rxjs/operators';
 import { AccountService, AlertService } from '@app/_services';
 import { MustMatch } from '@app/_helpers';
 
-@Component({ templateUrl: 'add-edit.component.html' })
-export class AddEditComponent implements OnInit {
+@Component({ templateUrl: 'add-edit-cause.component.html' })
+export class AddEditCauseComponent implements OnInit {
     form: FormGroup;
     id: string;
     isAddMode: boolean;

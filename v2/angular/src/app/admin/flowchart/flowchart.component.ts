@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
   }
 
   load(): void {
-    const url = 'https://cdn.staticaly.com/gh/lupinheiro/EindhovenClassificationMethod/f92c159043523c2236197af67d57dfb0a002a68c/v2/angular/src/app/admin/flowchart/diagram-2.bpmn';
+    const url = 'https://cdn.statically.io/gh/lupinheiro/EindhovenClassificationMethod/main/v2/angular/src/app/admin/flowchart/diagram-2.bpmn';
    
     this.http.get(url, { responseType: 'text' }) 
     .pipe(first())

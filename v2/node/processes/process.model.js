@@ -1,16 +1,14 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = model;
-
-function model(sequelize) {
-    const attributes = {
-        nameProcess: { type: DataTypes.STRING, allowNull: false },
-    };
-
-    const options = {
-        // disable default timestamp fields (createdAt and updatedAt)
-        timestamps: false
-    };
-
-    return sequelize.define('process', attributes, options);
-}
+module.exports = (sequelize) => {
+    const Process = sequelize.define("process", {
+      name: {
+        type: DataTypes.STRING
+      },
+      description: {
+        type: DataTypes.STRING
+      }
+    });
+  
+    return Process;
+  };

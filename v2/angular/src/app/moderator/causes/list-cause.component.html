@@ -1,12 +1,17 @@
-﻿<h1>Accounts</h1>
-<p>All accounts from secure (admin only) api end point:</p>
-<a routerLink="add" class="btn btn-sm btn-success mb-2">Create Account</a>
+﻿<h1>Process and Category</h1>
+<p>Add, Edit or Delete Processes/Categories:</p>
+<a routerLink="add" class="btn btn-sm btn-success mr-1">Create Process</a>
+<a routerLink="add" class="btn btn-sm btn-success mr-1">Create Category</a>
 <table class="table table-striped">
     <thead>
         <tr>
-            <th style="width:30%">Name</th>
-            <th style="width:30%">Email</th>
-            <th style="width:30%">Role</th>
+            <th style="width:30%">ID Process</th>
+            <th style="width:30%">ID Category</th>
+            <th style="width:30%">typeCategory</th>
+            <th style="width:30%">subTypeCategory</th>
+            <th style="width:30%">code</th>
+            <th style="width:30%">extensionCode</th>
+            <th style="width:30%">exampleCode</th>
             <th style="width:10%"></th>
         </tr>
     </thead>
@@ -14,6 +19,10 @@
         <tr *ngFor="let account of accounts">
             <td>{{account.title}} {{account.firstName}} {{account.companyName}}</td>
             <td>{{account.email}}</td>
+            <td>{{account.role}}</td>
+            <td>{{account.role}}</td>
+            <td>{{account.role}}</td>
+            <td>{{account.role}}</td>
             <td>{{account.role}}</td>
             <td style="white-space: nowrap">
                 <a routerLink="edit/{{account.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>

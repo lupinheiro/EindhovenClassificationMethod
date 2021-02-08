@@ -26,10 +26,10 @@ async function initialize() {
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
     db.RefreshToken.belongsTo(db.Account);
     db.Process.belongsToMany(db.Account, {through: "Account_Process", as: "accounts"});
-    db.Process.hasMany(db.Category, { as: "categories" });
+    db.Process.hasMany(db.Category, { as: "categories" }, { onDelete: 'CASCADE' } );
     db.Category.belongsTo(db.Process, {
         foreignKey: "processId",
-        as: "process",
+        as: "processes",
       });
 
     // sync all models with database

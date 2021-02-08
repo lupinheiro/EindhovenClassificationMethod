@@ -1,134 +1,124 @@
-const db = require('_helpers/db');
-const Process = db.Process;
-const { Op } = require('sequelize');
+const express = require('express');
+const router = express.Router();
+const Joi = require('joi');
+const authorize = require('_middleware/authorize')
+const validateRequest = require('_middleware/validate-request');
+const processService = require('./process.service');
 
-// Create and Save a new Process
-exports.create = (req, res) => {
-    // Validate request
-    if (!req.body.name || !req.body.description) {
-      res.status(400).send({
-        message: "Content can not be empty!"
-      });
-      return;
-    }
+// routes
+router.post('/createProcess', registerProcessSchema, createProcess);
+router.post('/createCategory', registerCategorySchema, createCategory);
+router.get('/getProcessById/:id', getProcessById);
+router.get('/getCategoryById/:id', getCategoryById);
+router.get('/getAllProcesses', getAllProcesses);
+router.get('/getAllCategories', getAllCategories);
+router.put('/updateProcess/:id',  updateProcessSchema, updateProcess);
+router.put('/updateCategory/:id', updateCategorySchema, updateCategory);
+router.delete('/deleteProcess/:id', _deleteProcess);
+router.delete('/deleteCategory/:id', _deleteCategory);
 
-     // Create a Process
-  const process = {
-    name: req.body.name,
-    description: req.body.description
+
+module.exports = router;
+
+function registerProcessSchema(req, res, next) {
+  const schema = Joi.object({
+      name: Joi.string().required(),
+      description: Joi.string().required(),
+  });
+  validateRequest(req, next, schema);
+}
+
+function registerCategorySchema(req, res, next) {
+  const schema = Joi.object({
+    typeCategory: Joi.string().required(),
+    subTypeCategory: Joi.string().required(),
+    code: Joi.string().required(),
+    extensionCode: Joi.string().required(),
+    exampleCode: Joi.string().required(),
+    processId: Joi.number().required()
+  });
+  validateRequest(req, next, schema);
+}
+
+function createProcess(req, res, next) {
+  processService.createProcess(req.body, req.get('origin'))
+      .then(() => res.json({ message: 'successful creation of the process' }))
+      .catch(next);
+}
+
+function createCategory(req, res, next) {
+  processService.createCategory(req.body, req.get('origin'))
+      .then(() => res.json({ message: 'successful creation of the category' }))
+      .catch(next);
+}
+
+function getAllProcesses(req, res, next) {
+  processService.getAllProcesses()
+      .then(processes => res.json(processes))
+      .catch(next);
+}
+
+function getAllCategories(req, res, next) {
+  processService.getAllCategories()
+      .then(categories => res.json(categories))
+      .catch(next);
+}
+
+function getProcessById(req, res, next) {
+  processService.getProcessById(req.params.id)
+      .then(process => process ? res.json(process) : res.sendStatus(404))
+      .catch(next);
+}
+
+function getCategoryById(req, res, next) {
+  processService.getCategoryById(req.params.id)
+      .then(process => category ? res.json(category) : res.sendStatus(404))
+      .catch(next);
+}
+
+function updateProcessSchema(req, res, next) {
+  const schemaRules = {
+      name: Joi.string().empty(''),
+      description: Joi.string().empty('')
   };
 
-   // Save Process in the database
-   Process.create(process)
-   .then(data => {
-     res.send(data);
-   })
-   .catch(err => {
-     res.status(500).send({
-       message:
-         err.message || "Some error occurred while creating the Process."
-     });
-   });
-};
+  const schema = Joi.object(schemaRules);
+  validateRequest(req, next, schema);
+}
 
-  
-// Get the categories for a given Process
-exports.findProcessCategoriesById = (req, res) => {
-  const id = req.params.processId;
+function updateCategorySchema(req, res, next) {
+  const schemaRules = {
+    typeCategory: Joi.string().required(),
+    subTypeCategory: Joi.string().required(),
+    code: Joi.string().required(),
+    extensionCode: Joi.string().required(),
+    exampleCode: Joi.string().required(),
+    processId: Joi.number().required()
+  };
 
-  Process.findByPk(id, { include: ["categories"] })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving Categories for Process with id=" + id
-      });
-    });
-};
+  const schema = Joi.object(schemaRules);
+  validateRequest(req, next, schema);
+}
 
-// Get the Process for a given process id
-exports.findProcessById = (req, res) => {
-  const id = req.params.processId;
+function updateProcess(req, res, next) {
+  processService.updateProcess(req.params.id, req.body)
+      .then(process => res.json(process))
+      .catch(next);
+}
 
-  Process.findByPk(id)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error while finding process with id :" + id
-      });
-    });
-};
+function updateCategory(req, res, next) {
+  processService.updateCategory(req.params.id, req.body)
+      .then(category => res.json(category))
+      .catch(next);
+}
 
-
-
-// Retrieve all Processes from the database, include categories.
-exports.findAll = (req, res) => {
-  Process.findAll({
-    include: ["categories"],
-  })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
-      });
-    });
-};
-
-
-// Update a Process by the id in the request
-exports.update = (req, res) => {
-  const id = req.params.processId;
-
-  Process.update(req.body, {
-    where: { processId: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Process was updated successfully."
-        });
-      } else {
-        res.send({
-          message: `Cannot update Process with id=${id}. Maybe Process was not found or req.body is empty!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating Process with id=" + id
-      });
-    });
-};
-
-
-
-// Delete a Process with the specified id in the request
-exports.delete = (req, res) => {
-  const id = req.params.processId;
-
-  Process.destroy({
-    where: { processId: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Process was deleted successfully!"
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Process with id=${id}. Maybe Process was not found!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Process with id=" + id
-      });
-    });
-};
+function _deleteProcess(req, res, next) {
+  processService.deleteProcess(req.params.id)
+      .then(() => res.json({ message: 'Process deleted successfully' }))
+      .catch(next);
+}
+function _deleteCategory(req, res, next) {
+  processService.deleteCategory(req.params.id)
+      .then(() => res.json({ message: 'Category deleted successfully' }))
+      .catch(next);
+}

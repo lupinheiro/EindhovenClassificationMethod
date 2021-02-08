@@ -1,0 +1,60 @@
+﻿<h1 *ngIf="isAddMode">Create Category</h1>
+<h1 *ngIf="!isAddMode">Edit Category</h1>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+        <div class="form-group col-5">
+            <label>processId</label>
+            <input type="text" formControlName="processId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.processId.errors }" />
+            <div *ngIf="submitted && f.processId.errors" class="invalid-feedback">
+                <div *ngIf="f.processId.errors.required">Process ID is required</div>
+            </div>
+        </div>
+        <div class="form-group col-5">
+            <label>typeCategory</label>
+            <input type="text" formControlName="typeCategory" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.typeCategory.errors }" />
+            <div *ngIf="submitted && f.typeCategory.errors" class="invalid-feedback">
+                <div *ngIf="f.typeCategory.errors.required">typeCategory is required</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-7">
+            <label>subTypeCategory</label>
+            <input type="text" formControlName="subTypeCategory" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.subTypeCategory.errors }" />
+            <div *ngIf="submitted && f.subTypeCategory.errors" class="invalid-feedback">
+                <div *ngIf="f.subTypeCategory.errors.required">subTypeCategory is required</div>
+            </div>
+        </div>
+        <div class="form-group col">
+            <label>code</label>
+            <input type="text" formControlName="code" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.code.errors }" />
+            <div *ngIf="submitted && f.code.errors" class="invalid-feedback">
+                <div *ngIf="f.code.errors.required">code is required</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            <label>extensionCode</label>
+            <input type="text" formControlName="extensionCode" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.extensionCode.errors }" />
+            <div *ngIf="submitted && f.extensionCode.errors" class="invalid-feedback">
+                <div *ngIf="f.extensionCode.errors.required">extensionCode is required</div>
+            </div>
+        </div>
+        <div class="form-group col-7">
+            <label>exampleCode</label>
+            <input type="text" formControlName="exampleCode" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.exampleCode.errors }" />
+            <div *ngIf="submitted && f.exampleCode.errors" class="invalid-feedback">
+                <div *ngIf="f.exampleCode.errors.required">exampleCode is required</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Save
+        </button>
+        <a routerLink="categories" class="btn btn-link">Cancel</a>
+    </div>
+</form>

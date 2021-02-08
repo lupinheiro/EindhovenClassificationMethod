@@ -5,4 +5,5 @@ export class Category {
     code: string;
     extensionCode: string;
     exampleCode: string;
+    processId: string;
 }

@@ -1,4 +1,5 @@
 export class Process {
     id: string;
-    nameProcess: string;
+    name: string;
+    description: string;
 }

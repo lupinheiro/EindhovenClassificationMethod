@@ -95,8 +95,8 @@ async function getAllCategories() {
 
 //helper functions
 function categoryDetails(category) {
-  const { id, typeCategory, subTypeCategory, code, extensionCode, exampleCode } = category;
-  return { id, typeCategory, subTypeCategory, code, extensionCode, exampleCode};
+  const { id, typeCategory, subTypeCategory, code, extensionCode, exampleCode, processId } = category;
+  return { id, typeCategory, subTypeCategory, code, extensionCode, exampleCode, processId};
 }
 
 function processDetails(process) {

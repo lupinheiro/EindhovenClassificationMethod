@@ -72,7 +72,7 @@ function getProcessById(req, res, next) {
 
 function getCategoryById(req, res, next) {
   processService.getCategoryById(req.params.id)
-      .then(process => category ? res.json(category) : res.sendStatus(404))
+      .then(category => category ? res.json(category) : res.sendStatus(404))
       .catch(next);
 }
 

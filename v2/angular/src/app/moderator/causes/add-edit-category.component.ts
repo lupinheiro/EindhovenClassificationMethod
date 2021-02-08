@@ -3,11 +3,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { AccountService, AlertService } from '@app/_services';
+import {AlertService, ProcessService } from '@app/_services';
 import { MustMatch } from '@app/_helpers';
 
-@Component({ templateUrl: 'add-edit-cause.component.html' })
-export class AddEditCauseComponent implements OnInit {
+@Component({ templateUrl: 'add-edit-category.component.html' })
+export class AddEditCategoryComponent implements OnInit {
     form: FormGroup;
     id: string;
     isAddMode: boolean;
@@ -18,7 +18,7 @@ export class AddEditCauseComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private accountService: AccountService,
+        private processService: ProcessService,
         private alertService: AlertService
     ) {}
 
@@ -27,19 +27,16 @@ export class AddEditCauseComponent implements OnInit {
         this.isAddMode = !this.id;
 
         this.form = this.formBuilder.group({
-            title: ['', Validators.required],
-            firstName: ['', Validators.required],
-            companyName: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            role: ['', Validators.required],
-            password: ['', [Validators.minLength(6), this.isAddMode ? Validators.required : Validators.nullValidator]],
-            confirmPassword: ['']
-        }, {
-            validator: MustMatch('password', 'confirmPassword')
+            processId: ['', Validators.required],
+            typeCategory: ['', Validators.required],
+            subTypeCategory: ['', Validators.required],
+            code:['', Validators.required],
+            extensionCode: ['', Validators.required],
+            exampleCode: ['', Validators.required],
         });
 
         if (!this.isAddMode) {
-            this.accountService.getById(this.id)
+            this.processService.getCategoryById(this.id)
                 .pipe(first())
                 .subscribe(x => this.form.patchValue(x));
         }
@@ -61,18 +58,18 @@ export class AddEditCauseComponent implements OnInit {
 
         this.loading = true;
         if (this.isAddMode) {
-            this.createAccount();
+            this.createCategory();
         } else {
-            this.updateAccount();
+            this.updateCategory();
         }
     }
 
-    private createAccount() {
-        this.accountService.create(this.form.value)
+    private createCategory() {
+        this.processService.createCategory(this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Account created successfully', { keepAfterRouteChange: true });
+                    this.alertService.success('Category created successfully', { keepAfterRouteChange: true });
                     this.router.navigate(['../'], { relativeTo: this.route });
                 },
                 error: error => {
@@ -82,8 +79,8 @@ export class AddEditCauseComponent implements OnInit {
             });
     }
 
-    private updateAccount() {
-        this.accountService.update(this.id, this.form.value)
+    private updateCategory() {
+        this.processService.updateCategory(this.id, this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {

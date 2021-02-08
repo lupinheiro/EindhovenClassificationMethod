@@ -1,7 +1,6 @@
-const db = require("../processes");
+const db = require('_helpers/db');
 const Process = db.Process;
-const Category = db.Category;
-const Op = db.Sequelize.Op;
+const { Op } = require('sequelize');
 
 // Create and Save a new Process
 exports.create = (req, res) => {
@@ -31,53 +30,105 @@ exports.create = (req, res) => {
      });
    });
 };
+
   
-// Create and Save new Category
-exports.createCategory = (processId, category) => {
-    return Category.create({
-        typeCategory: comment.name,
-        subTypeCategory: comment.text,
-        code: comment.text,
-        extensionCode: comment.text,
-        exampleCode: comment.text,
-        processId: processId,
+// Get the categories for a given Process
+exports.findProcessCategoriesById = (req, res) => {
+  const id = req.params.processId;
+
+  Process.findByPk(id, { include: ["categories"] })
+    .then(data => {
+      res.send(data);
     })
-      .then((category) => {
-        console.log(">> Created category: " + JSON.stringify(category, null, 4));
-        return category;
-      })
-      .catch((err) => {
-        console.log(">> Error while creating Category: ", err);
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Categories for Process with id=" + id
       });
-  };
-
-// Get the categories for a given process
-exports.findProcessById = (processId) => {
-    return Process.findByPk(processId, { include: ["categories"] })
-      .then((process) => {
-        return process;
-      })
-      .catch((err) => {
-        console.log(">> Error while finding process: ", err);
-      });
-  };
-
-// Get the categories for a given category id
-exports.findCategoryById = (id) => {
-    return Category.findByPk(id, { include: ["process"] })
-      .then((category) => {
-        return category;
-      })
-      .catch((err) => {
-        console.log(">> Error while finding categories: ", err);
-      });
-  };
-
-// Get all Processes include categories
-exports.findAll = () => {
-    return Process.findAll({
-      include: ["categories"],
-    }).then((process) => {
-      return process;
     });
-  };
+};
+
+// Get the Process for a given process id
+exports.findProcessById = (req, res) => {
+  const id = req.params.processId;
+
+  Process.findByPk(id)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error while finding process with id :" + id
+      });
+    });
+};
+
+
+
+// Retrieve all Processes from the database, include categories.
+exports.findAll = (req, res) => {
+  Process.findAll({
+    include: ["categories"],
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};
+
+
+// Update a Process by the id in the request
+exports.update = (req, res) => {
+  const id = req.params.processId;
+
+  Process.update(req.body, {
+    where: { processId: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Process was updated successfully."
+        });
+      } else {
+        res.send({
+          message: `Cannot update Process with id=${id}. Maybe Process was not found or req.body is empty!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating Process with id=" + id
+      });
+    });
+};
+
+
+
+// Delete a Process with the specified id in the request
+exports.delete = (req, res) => {
+  const id = req.params.processId;
+
+  Process.destroy({
+    where: { processId: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Process was deleted successfully!"
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Process with id=${id}. Maybe Process was not found!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Could not delete Process with id=" + id
+      });
+    });
+};

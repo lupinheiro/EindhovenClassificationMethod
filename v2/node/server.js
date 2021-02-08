@@ -10,11 +10,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+
+
 // allow cors requests from any origin and with credentials
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
 
 // api routes
 app.use('/accounts', require('./accounts/accounts.controller'));
+//app.use('/process', require('./processes/process.service'));
+//app.use('/category', require('./processes/category.service'));
+
+require("./processes/process.service")(app);
+require("./processes/category.service")(app);
 
 // swagger docs route
 app.use('/api-docs', require('_helpers/swagger'));

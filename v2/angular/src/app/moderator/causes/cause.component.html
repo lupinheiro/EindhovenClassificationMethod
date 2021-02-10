@@ -1,0 +1,40 @@
+﻿<h1>Causes</h1>
+<p>Add, Edit or Delete Categories:</p>
+<a routerLink="addCategory" class="btn btn-sm btn-success mr-1">Create Category</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width:30%">ID Process</th>
+            <th style="width:30%">ID Category</th>
+            <th style="width:30%">typeCategory</th>
+            <th style="width:30%">subTypeCategory</th>
+            <th style="width:30%">code</th>
+            <th style="width:30%">extensionCode</th>
+            <th style="width:30%">exampleCode</th>
+            <th style="width:10%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let category of categories">
+            <td>{{category.processId}}</td>
+            <td>{{category.id}}</td>
+            <td>{{category.typeCategory}}</td>
+            <td>{{category.subTypeCategory}}</td>
+            <td>{{category.code}}</td>
+            <td>{{category.extensionCode}}</td>
+            <td>{{category.exampleCode}}</td>
+            <td style="white-space: nowrap">
+                <a routerLink="editCategory/{{category.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>
+                <button (click)="deleteCategory(category.id)" class="btn btn-sm btn-danger btn-delete-account" [disabled]="category.isDeleting">
+                    <span *ngIf="categories.isDeleting" class="spinner-border spinner-border-sm"></span>
+                    <span *ngIf="!category.isDeleting">Delete</span>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="!categories">
+            <td colspan="4" class="text-center">
+                <span class="spinner-border spinner-border-lg align-center"></span>
+            </td>
+        </tr>
+    </tbody>
+</table>

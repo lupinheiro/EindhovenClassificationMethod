@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import {AlertService, ProcessService } from '@app/_services';
-import { MustMatch } from '@app/_helpers';
 
 @Component({ templateUrl: 'add-edit-category.component.html' })
 export class AddEditCategoryComponent implements OnInit {
@@ -13,6 +12,7 @@ export class AddEditCategoryComponent implements OnInit {
     isAddMode: boolean;
     loading = false;
     submitted = false;
+    processes: any[];
 
     constructor(
         private formBuilder: FormBuilder,
@@ -25,6 +25,10 @@ export class AddEditCategoryComponent implements OnInit {
     ngOnInit() {
         this.id = this.route.snapshot.params['id'];
         this.isAddMode = !this.id;
+
+        this.processService.getAllProcesses()
+            .pipe(first())
+            .subscribe(processes => this.processes = processes);
 
         this.form = this.formBuilder.group({
             processId: ['', Validators.required],

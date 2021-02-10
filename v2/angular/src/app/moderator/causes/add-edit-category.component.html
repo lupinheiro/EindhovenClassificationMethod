@@ -2,9 +2,11 @@
 <h1 *ngIf="!isAddMode">Edit Category</h1>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="form-row">
-        <div class="form-group col-5">
+        <div class="form-group col-1">
             <label>processId</label>
-            <input type="text" formControlName="processId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.processId.errors }" />
+            <select formControlName="processId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.processId.errors }">
+                <option *ngFor="let process of processes" [Value]="processId">{{process.id}}</option>
+              </select>
             <div *ngIf="submitted && f.processId.errors" class="invalid-feedback">
                 <div *ngIf="f.processId.errors.required">Process ID is required</div>
             </div>

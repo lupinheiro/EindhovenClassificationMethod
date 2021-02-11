@@ -3,17 +3,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import {AlertService, ProcessService, AccountService } from '@app/_services';
+import {AlertService, ProcessService, AccountService} from '../_services';
+import {ReportService } from '../_services/report.service';
 
-@Component({ templateUrl: 'add-edit-process.component.html' })
-export class AddEditProcessComponent implements OnInit {
+@Component({ templateUrl: 'add-edit-report.component.html' })
+export class AddEditReportComponent implements OnInit {
     form: FormGroup;
     id: string;
     isAddMode: boolean;
     loading = false;
     submitted = false;
+    categories: any[];
+    reports: any[];
     processes: any[];
-    accounts: any[];
+    account = this.accountService.accountValue;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -21,29 +24,35 @@ export class AddEditProcessComponent implements OnInit {
         private router: Router,
         private processService: ProcessService,
         private alertService: AlertService,
+        private reportService: ReportService,
         private accountService: AccountService
     ) {}
 
     ngOnInit() {
-        
+        this.id = this.route.snapshot.params['id'];
+        this.isAddMode = !this.id;
+
+        this.processService.getAllCategories()
+            .pipe(first())
+            .subscribe(categories => this.categories = categories);
+
+        this.reportService.getAllReports()
+            .pipe(first())
+            .subscribe(reports => this.reports = reports);
+
         this.processService.getAllProcesses()
             .pipe(first())
             .subscribe(processes => this.processes = processes);
 
-        this.accountService.getAll()
-            .pipe(first())
-            .subscribe(accounts => this.accounts = accounts);
-
-        this.id = this.route.snapshot.params['id'];
-        this.isAddMode = !this.id;
         this.form = this.formBuilder.group({
-            name: ['', Validators.required],
-            description: ['', Validators.required],
-            accountId : ['', Validators.required],
+            accountId: ['', Validators.required],
+            type: ['', Validators.required],
+            code:['', Validators.required],
+            reportText: ['', Validators.required],
         });
 
         if (!this.isAddMode) {
-            this.processService.getProcessById(this.id)
+            this.reportService.getReportById(this.id)
                 .pipe(first())
                 .subscribe(x => this.form.patchValue(x));
         }
@@ -65,18 +74,18 @@ export class AddEditProcessComponent implements OnInit {
 
         this.loading = true;
         if (this.isAddMode) {
-            this.createProcess();
+            this.createReport();
         } else {
-            this.updateProcess();
+            this.updateReport();
         }
     }
 
-    private createProcess() {
-        this.processService.createProcess(this.form.value)
+    private createReport() {
+        this.reportService.createReport(this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService.success('Process created successfully', { keepAfterRouteChange: true });
+                    this.alertService.success('Report created successfully', { keepAfterRouteChange: true });
                     this.router.navigate(['../'], { relativeTo: this.route });
                 },
                 error: error => {
@@ -86,8 +95,8 @@ export class AddEditProcessComponent implements OnInit {
             });
     }
 
-    private updateProcess() {
-        this.processService.updateProcess(this.id, this.form.value)
+    private updateReport() {
+        this.reportService.updateReport(this.id, this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {

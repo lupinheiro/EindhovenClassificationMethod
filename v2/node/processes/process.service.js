@@ -100,8 +100,8 @@ function categoryDetails(category) {
 }
 
 function processDetails(process) {
-  const { id, name, description, categories} = process;
-  return { id, name, description, categories};
+  const { id, name, description, categories, accountId} = process;
+  return { id, name, description, categories, accountId};
 }
 
 //get process with categories

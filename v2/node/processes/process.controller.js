@@ -24,6 +24,7 @@ function registerProcessSchema(req, res, next) {
   const schema = Joi.object({
       name: Joi.string().required(),
       description: Joi.string().required(),
+      accountId: Joi.number().required()
   });
   validateRequest(req, next, schema);
 }
@@ -79,7 +80,8 @@ function getCategoryById(req, res, next) {
 function updateProcessSchema(req, res, next) {
   const schemaRules = {
       name: Joi.string().empty(''),
-      description: Joi.string().empty('')
+      description: Joi.string().empty(''),
+      accountId: Joi.number().required()
   };
 
   const schema = Joi.object(schemaRules);

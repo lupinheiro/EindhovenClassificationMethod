@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
 
-import {ProcessService } from '@app/_services';
+import {ProcessService, AccountService } from '@app/_services';
 import { Process } from '@app/_models';
 
 @Component({ templateUrl: 'list-process.component.html' })
@@ -9,6 +9,7 @@ export class ListProcessComponent implements OnInit {
     processes: any[];
 
     constructor(private processService: ProcessService) {}
+    
 
     ngOnInit() {
         this.processService.getAllProcesses()

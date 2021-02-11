@@ -20,18 +20,26 @@ async function initialize() {
     db.RefreshToken = require('../accounts/refresh-token.model')(sequelize);
     db.Category = require('../processes/category.model')(sequelize);
     db.Process = require('../processes/process.model')(sequelize);
+    db.Report = require('../processes/report.model')(sequelize);
 
 
     // define relationships
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
     db.RefreshToken.belongsTo(db.Account);
-    db.Process.belongsToMany(db.Account, {through: "Account_Process", as: "accounts"});
+    db.Process.belongsTo(db.Account, {
+      foreignKey: "accountId",
+      as: "accounts",
+    });
     db.Process.hasMany(db.Category, { as: "categories" }, { onDelete: 'CASCADE' } );
     db.Category.belongsTo(db.Process, {
         foreignKey: "processId",
         as: "processes",
       });
-
+    db.Account.hasMany(db.Report, { onDelete: 'CASCADE' });
+    db.Report.belongsTo(db.Account, {
+      foreignKey: "accountId",
+      as: "reports",
+    });
     // sync all models with database
     await sequelize.sync();
 }

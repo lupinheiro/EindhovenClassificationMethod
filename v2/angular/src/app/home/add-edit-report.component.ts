@@ -17,6 +17,7 @@ export class AddEditReportComponent implements OnInit {
     reports: any[];
     processes: any[];
     account = this.accountService.accountValue;
+    numbers: [1,2];
 
     constructor(
         private formBuilder: FormBuilder,

@@ -21,7 +21,7 @@
             <td>{{report.reportText}}</td>
             <td style="white-space: nowrap">
                 <a routerLink="editReport/{{report.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>
-                <button (click)="deleteReport(report.id)" class="btn btn-sm btn-danger btn-delete-account" [disabled]="report.isDeleting">
+                <button type = "Delete" (click)="deleteReport(report.id)" class="btn btn-sm btn-danger btn-delete-account" [disabled]="report.isDeleting">
                     <span *ngIf="report.isDeleting" class="spinner-border spinner-border-sm"></span>
                     <span *ngIf="!report.isDeleting">Delete</span>
                 </button>

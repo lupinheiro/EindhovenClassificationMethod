@@ -1,12 +1,18 @@
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Component, OnInit} from '@angular/core';
-import {Modeler, OriginalPropertiesProvider, PropertiesPanelModule, InjectionNames, OriginalPaletteProvider} from "./bpmn-js";
-import { first } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {BpmnModeler} from 'bpmn-js/lib/Modeler';
+import {Observable} from 'rxjs';
 
-import { AccountService, AlertService } from '@app/_services';
+import Modeler from "bpmn-js/lib/Modeler";
+import propertiesPanelModule from "bpmn-js-properties-panel";
+import propertiesProviderModule from "bpmn-js-properties-panel/lib/provider/camunda";
+
+import "bpmn-js/dist/assets/diagram-js.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+import "bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css";
+
+import { first } from 'rxjs/operators';
+
+import * as camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda.json';
 
 
 @Component({
@@ -15,20 +21,13 @@ import { AccountService, AlertService } from '@app/_services';
   styleUrls: ['./flowchart.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'Eindhoven Classification Model Flowchart';
-  modeler;
-  form: FormGroup;
-    id: string;
-    isAddMode: boolean;
-    loading = false;
-    submitted = false;
+  title = 'Eindhoven Classification Method';
+  modeler: Modeler;
 
-  constructor(private http: HttpClient, private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private accountService: AccountService,
-    private alertService: AlertService) {
-    
+  @ViewChild('canvas')
+  private canvesRef: ElementRef;
+
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit(): void {
@@ -36,14 +35,33 @@ export class AppComponent implements OnInit {
       container: '#canvas',
       width: '100%',
       height: '600px',
+      propertiesPanel: {
+        parent: '#properties'
+      },
+      additionalModules: [
+        propertiesPanelModule,
+        propertiesProviderModule
+      ],
+      moddleExtensions: {
+        camunda: camundaModdleDescriptor
+      }
     });
+    this.load();
   }
+
 
   handleError(err: any) {
     if (err) {
       console.warn('Ups, error: ', err);
     }
   }
+
+  public getExample(): Observable<string> {
+    const url = '/assets/bpmn/initial.bpmn'; // local
+    return this.http.get(url, {responseType: 'text'});
+  }
+
+
 
   load(): void {
     const url = 'https://cdn.statically.io/gh/lupinheiro/EindhovenClassificationMethod/main/v2/angular/src/app/admin/flowchart/diagram-2.bpmn';

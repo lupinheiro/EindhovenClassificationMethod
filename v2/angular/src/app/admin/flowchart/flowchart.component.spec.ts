@@ -1,47 +1,31 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './flowchart.component';
-import { DiagramComponent } from './diagram/diagram.component';
-import { DebugNode } from '@angular/core';
 
 describe('AppComponent', () => {
-
-  let fixture: ComponentFixture<AppComponent>;
-  let component: DebugNode['componentInstance'];
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent,
-        DiagramComponent
+        AppComponent
       ],
-      imports: [HttpClientTestingModule]
     }).compileComponents();
-    fixture = TestBed.createComponent(AppComponent);
-    component = fixture.debugElement.componentInstance;
-    fixture.detectChanges();
   }));
 
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
   });
 
-
-  it('renders a diagram component', () => {
-    expect(fixture.nativeElement.querySelector('app-diagram')).toBeTruthy();
+  it(`should have as title 'bpmn-camunda-example'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('bpmn-camunda-example');
   });
 
-
-  it('sets an error message', () => {
-    const error = new Error('ERROR');
-
-    component.handleImported({
-      type: 'error',
-      error
-    });
-
-    expect(component.importError).toEqual(error);
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('.content span').textContent).toContain('bpmn-camunda-example app is running!');
   });
-
 });

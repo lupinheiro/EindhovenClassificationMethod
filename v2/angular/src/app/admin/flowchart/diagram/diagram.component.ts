@@ -1,103 +1,99 @@
-import {
-  AfterContentInit,
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Output,
-  ViewChild,
-  SimpleChanges,
-  EventEmitter
-} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
+import Modeler from "bpmn-js/lib/Modeler";
+import propertiesPanelModule from "bpmn-js-properties-panel";
+import propertiesProviderModule from "bpmn-js-properties-panel/lib/provider/camunda";
 
-/**
- * You may include a different variant of BpmnJS:
- *
- * bpmn-viewer  - displays BPMN diagrams without the ability
- *                to navigate them
- * bpmn-modeler - bootstraps a full-fledged BPMN editor
- */
-import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.production.min.js';
+import "bpmn-js/dist/assets/diagram-js.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+import "bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css";
 
-import { importDiagram } from './rx';
+import { first } from 'rxjs/operators';
 
-import { throwError } from 'rxjs';
+import * as camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda.json';
+
 
 @Component({
-  selector: 'app-diagram',
-  template: `
-    <div #ref class="diagram-container"></div>
-  `,
-  styles: [
-    `
-      .diagram-container {
-        height: 100%;
-        width: 100%;
-      }
-    `
-  ]
+  selector: 'app-root',
+  templateUrl: '../flowchart.component.html',
+  styleUrls: ['../flowchart.component.css']
 })
-export class DiagramComponent implements AfterContentInit, OnChanges, OnDestroy {
-  private bpmnJS: BpmnJS;
+export class DiagramComponent implements OnInit {
+  title = 'Eindhoven Classification';
+  modeler: Modeler;
 
-  @ViewChild('ref', { static: true }) private el: ElementRef;
-  @Output() private importDone: EventEmitter<any> = new EventEmitter();
-
-  @Input() private url: string;
+  @ViewChild('canvas')
+  private canvesRef: ElementRef;
 
   constructor(private http: HttpClient) {
+  }
 
-    this.bpmnJS = new BpmnJS();
-
-    this.bpmnJS.on('import.done', ({ error }) => {
-      if (!error) {
-        this.bpmnJS.get('canvas').zoom('fit-viewport');
+  ngOnInit(): void {
+    this.modeler = new Modeler({
+      container: '#canvas',
+      width: '100%',
+      height: '600px',
+      propertiesPanel: {
+        parent: '#properties'
+      },
+      additionalModules: [
+        propertiesPanelModule,
+        propertiesProviderModule
+      ],
+      moddleExtensions: {
+        camunda: camundaModdleDescriptor
       }
     });
+    this.load();
   }
 
-  ngAfterContentInit(): void {
-    this.bpmnJS.attachTo(this.el.nativeElement);
-  }
 
-  ngOnChanges(changes: SimpleChanges) {
-    // re-import whenever the url changes
-    if (changes.url) {
-      this.loadUrl(changes.url.currentValue);
+  handleError(err: any) {
+    if (err) {
+      console.warn('Ups, error: ', err);
     }
   }
 
-  ngOnDestroy(): void {
-    this.bpmnJS.destroy();
+  public getExample(): Observable<string> {
+    const url = '/assets/bpmn/initial.bpmn'; // local
+    return this.http.get(url, {responseType: 'text'});
   }
 
-  /**
-   * Load diagram from URL and emit completion event
-   */
-  loadUrl(url: string) {
 
-    return (
-      this.http.get(url, { responseType: 'text' }).pipe(
-        catchError(err => throwError(err)),
-        importDiagram(this.bpmnJS)
-      ).subscribe(
-        (warnings) => {
-          this.importDone.emit({
-            type: 'success',
-            warnings
-          });
-        },
-        (err) => {
-          this.importDone.emit({
-            type: 'error',
-            error: err
-          });
-        }
-      )
+
+  load(): void {
+    const url = 'https://cdn.statically.io/gh/lupinheiro/EindhovenClassificationMethod/main/v2/angular/src/app/admin/flowchart/diagram-2.bpmn';
+   
+    this.http.get(url, { responseType: 'text' }) 
+    .pipe(first())
+    .subscribe(
+      (x: any) => {
+        console.log('Fetched XML, now importing: ', x);
+        this.modeler.importXML(x, this.handleError);
+      },
+    );
+  }
+  
+
+  setEncoded(link, name, data) {
+    var encodedData = encodeURIComponent(data);
+
+    if (data) {
+      link.addClass('active').attr({
+        'href': 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData,
+        'download': name
+      });
+    } else {
+      link.removeClass('active');
+    }
+  }
+
+  save(): void {
+    this.modeler.saveXML((err: any, xml: any) => 
+    console.log('Result of saving XML: ', err, xml)
     );
   }
 }
+
